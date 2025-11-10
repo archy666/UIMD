@@ -4,8 +4,7 @@ from utils import set_seed
 from dataload import import_data
 from scipy.io import loadmat
 import numpy as np
-from datetime import datetime
-from model import IMCI
+from model import UIMD
 from config import get_args
 from wapper import train_and_evaluate
 
@@ -39,7 +38,7 @@ if __name__ == '__main__':
                 for rho_i in args.rho:
                     param = [beta_i, lamb_i, rho_i]
                     results = []
-                    net = IMCI(input_dims=input_dims, class_num=class_num).to(device)
+                    net = UIMD(input_dims=input_dims, class_num=class_num).to(device)
                     train_dataset = import_data(data_path, missing_rate, random_state=1, train=True)
                     test_dataset = import_data(data_path, missing_rate, random_state=1,  train=False)
                     trainloader = torch.utils.data.DataLoader(train_dataset, batch_size=args.batchsize, shuffle=True, num_workers=0)

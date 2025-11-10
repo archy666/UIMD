@@ -75,12 +75,10 @@ def reyi_entropy(x, sigma):
     alpha = 1.01#1.01
     k = calculate_gram_mat(x, sigma)
     k = k / torch.trace(k)
-    # eigv = torch.abs(torch.symeig(k, eigenvectors=True)[0])
     try:
         eigv = torch.abs(torch.linalg.eigh(k)[0])
     except:
         eigv = torch.diag(torch.eye(k.shape[0]))
-    # eigv = torch.abs(torch.linalg.eigh(k)[0])
     eig_pow = eigv ** alpha
     entropy = (1 / (1 - alpha)) * torch.log2(torch.sum(eig_pow))
     return entropy
@@ -92,7 +90,6 @@ def joint_entropy(x, y, s_x, s_y):
     y = calculate_gram_mat(y, s_y)
     k = torch.mul(x, y)
     k = k / torch.trace(k)
-    # eigv = torch.abs(torch.symeig(k, eigenvectors=True)[0])
     eigv = torch.abs(torch.linalg.eigh(k)[0])
 
     eig_pow = eigv ** alpha
@@ -108,7 +105,6 @@ def calculate_MI(x, y, s_x, s_y):
     return Ixy
 
 def get_kernelsize(features: torch.Tensor, selected_param: Union[int, float]=0.15, select_type: str='meadian'):
-    ### estimating kernelsize with data with the rule-of-thumb
     features = torch.flatten(features, 1).cpu().detach().numpy()
     k_features = squareform(pdist(features))
     if select_type=='min':
@@ -121,8 +117,6 @@ def get_kernelsize(features: torch.Tensor, selected_param: Union[int, float]=0.1
         
     else:
         kernelsize = 1.0
-    # if kernelsize<EPSILON:
-    #     kernelsize = torch.tensor(EPSILON, device=features.device)
     return kernelsize
 
 def hsic(x, y, s_x, s_y):

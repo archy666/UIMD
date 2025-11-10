@@ -44,7 +44,7 @@ def train_and_evaluate(args, param, trainloader, testloader, net):
             I_xz = [calculate_MI(input_i, zi, s_x=sigma_input ** 2, s_y=sigma_z ** 2) for (input_i, zi, sigma_input, sigma_z) in zip(inputs, fea_z, sigma_input_list, sigma_z_list)]
             H_zc = reyi_entropy(com_feature, sigma_com)
             hsic_c_u = [hsic(com_feature, u_i, s_x=sigma_com ** 2, s_y=sigma_uni ** 2) for (u_i, sigma_uni) in zip(uni_features, sigma_un)]
-            loss = loss_ce #+ param[0] * sum(I_xz) - param[1] * H_zc + param[2] * sum(hsic_c_u)
+            loss = loss_ce + param[0] * sum(I_xz) - param[1] * H_zc + param[2] * sum(hsic_c_u)
 
             loss.backward()
             optimizer.step()
@@ -57,7 +57,6 @@ def train_and_evaluate(args, param, trainloader, testloader, net):
 
         report = evaluate(args, testloader, net)
         net.train()
-        # print(f'Epoch = {epoch}, best_acc = {best_acc}')
         if report[0] > best_acc:
             best_acc = report[0]
             best_result = report
